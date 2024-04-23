@@ -221,6 +221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _nameText: {fileID: 839008668}
   _dialogueText: {fileID: 1667289448}
+  _characterDelay: 0.01
   _animator: {fileID: 1819275468}
 --- !u!4 &432334999
 Transform:

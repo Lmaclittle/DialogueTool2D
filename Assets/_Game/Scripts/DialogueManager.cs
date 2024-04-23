@@ -6,9 +6,17 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    [Header("The basics")]
+    [Tooltip("Put the TMPro name of NPC in here for it to be displayed")]
     public TextMeshProUGUI _nameText;
+    [Tooltip("Put the TMPro dialogue of NPC in here for it to be displayed")]
     public TextMeshProUGUI _dialogueText;
 
+    [Header("Dialogue box settings")]
+    [Tooltip("Affects how fast text moves, make the number high to go slower, make it low to go faster.")]
+    public float _characterDelay = 0.05f;
+
+    [Tooltip("Animator used to make the dialogue box appear and disappear via a side swipe")]
     public Animator _animator;
 
     public Queue<string> sentences;
@@ -44,16 +52,16 @@ public class DialogueManager : MonoBehaviour
 
         string sentence = sentences.Dequeue();
         StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence));
+        StartCoroutine(TypeSentence(sentence, _characterDelay));
     }
 
-    IEnumerator TypeSentence (string sentence)
+    IEnumerator TypeSentence (string sentence, float letterDelay)
     {
         _dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
             _dialogueText.text += letter;
-            yield return null;
+            yield return new WaitForSeconds(letterDelay);
         }
     }
 
