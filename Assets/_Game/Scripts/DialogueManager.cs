@@ -25,7 +25,10 @@ public class DialogueManager : MonoBehaviour
     public float _characterDelay = 0.05f;
     [Tooltip("Animator used to make the dialogue box appear and disappear via a side swipe")]
     public Animator _animator;
-    
+
+    bool _skipText = false;
+
+
 
     public Queue<string> sentences;
 
@@ -39,6 +42,11 @@ public class DialogueManager : MonoBehaviour
         _nameText.color = _nameColor;
         _dialogueText.color = _dialogueTextColor;
         _dialogueBox.color = _dialogueBoxColor;
+        if (Input.GetMouseButtonDown(1))
+        {
+            _skipText = true;
+            Debug.Log("right click");
+        }
     }
 
     public void StartDialogue (Dialogue dialogue)
@@ -66,17 +74,35 @@ public class DialogueManager : MonoBehaviour
         }
 
         string sentence = sentences.Dequeue();
-        StopAllCoroutines();
         StartCoroutine(TypeSentence(sentence, _characterDelay));
     }
 
     IEnumerator TypeSentence (string sentence, float letterDelay)
     {
         _dialogueText.text = "";
-        foreach (char letter in sentence.ToCharArray())
+
+        bool skipText = _skipText;
+
+        if (skipText)
         {
-            _dialogueText.text += letter;
-            yield return new WaitForSeconds(letterDelay);
+            _dialogueText.text = sentence;
+            _skipText = false;
+        }
+        else
+        {
+            foreach (char letter in sentence.ToCharArray())
+            {
+                if (_skipText)
+                {
+                    _dialogueText.text = sentence;
+                    _skipText = false;
+                    yield break;
+                }
+
+
+                _dialogueText.text += letter;
+                yield return new WaitForSeconds(letterDelay);
+            }
         }
     }
 
